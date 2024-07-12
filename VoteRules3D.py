@@ -6,7 +6,6 @@ from vote import Vote
 from election import Election
 import matplotlib.pyplot as plt 
 
-
 class SVoter3D:
     def __init__(self, num, x, y=0, z=0):
         self.x = x
@@ -222,7 +221,54 @@ class VoteResult3D:
         sorted_dict = self.head_to_head(c_type)
         return sorted_dict[0][0]
 
+    def minimax(self): #Outputs the greatest θ-winning candidate when k = 1, ie: the minimax voting rule
+        #Input: 
+        #candidates - an array of each candidate
+        #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"    
+        ballots = self.ballots
+        candidates = self.candidates
+        
+        #A1: Initialize variables
 
+        #Greatest θ-winning set variables
+        max_coefficient = 0
+        greatest_theta_winning_sets = []
+
+
+        #Number of ballots (n) and candidates (m)
+        n = len(ballots)
+        m = len(candidates)
+
+        #A2: Directly compute θ coefficient for each pair by iterating through each ballot
+        
+        for j in range(m):
+            counter = 0 #Initialize counter
+            min_theta = 100000000 #Initialize min theta
+            for k in range(m):
+                #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
+                if k != j: #If k is not j
+                    current_theta = 0 #Initialize current theta
+                    for ballot in ballots:
+                        if candidates[k] not in ballot:
+                            if candidates[j] in ballot:
+                                counter += 1
+                        elif candidates[j] in ballot: #If candidate in the ballot
+                            if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate beats k
+                                counter += 1
+                    #Normalize θ by the total number of votes to get the coefficient
+                    current_theta = counter / n 
+                    if current_theta < min_theta:
+                        min_theta = current_theta
+                    counter = 0 #Reset counter
+            this_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+            if this_coefficent > max_coefficient:
+                max_coefficient = this_coefficent
+                greatest_theta_winning_sets = [(candidates[j])]
+            elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
+                greatest_theta_winning_sets.append((candidates[j]))
+
+        #A3: Return greatest θ-winning sets
+        return greatest_theta_winning_sets[0]
 
     def pluralityVeto(self):
         # plurality stage - each candidate is given score equals the number of times they are first-choice
@@ -353,13 +399,22 @@ class VoteResult3D:
             return candidate == self.condorcetWinner
         else:
             return None
-
+        
 def main():
-    test = VoteResult3D(200, 15, "1D", "normal")
-    print(test.pluralityVeto())
-    print(test.condorcetCheck(test.plurality()))
-    print(test.condorcetCheck(test.copeland()))
     
+    #print(test.pluralityVeto())
+    #print(test.condorcetCheck(test.plurality()))
+    #print(test.condorcetCheck(test.copeland()))
+
+    m = 20
+    n = 200
+    for i in range(10):
+        test = VoteResult3D(m, n, "1D", "normal")
+        winner_mini = test.minimax()
+        print(f"Minimax winner {i} is {winner_mini} with a distortion of {test.distortion(winner_mini)}")
+        winner_copeland = test.copeland()
+        print(f"Copeland winner {i} is {winner_copeland} with a distortion of {test.distortion(winner_copeland)}")
+
 if __name__ == "__main__":  
     main()
     
