@@ -221,7 +221,7 @@ class VoteResult3D:
         sorted_dict = self.head_to_head(c_type)
         return sorted_dict[0][0]
 
-    def minimax(self): #Outputs the greatest θ-winning candidate when k = 1, ie: the minimax voting rule
+    def maximin(self): #Outputs the greatest θ-winning candidate when k = 1, ie: the maximin voting rule
         #Input: 
         #candidates - an array of each candidate
         #ballots - an array of each ballot, ballots cannot include candidates that do not appear in "candidates"    
@@ -410,8 +410,8 @@ def main():
     n = 200
     for i in range(10):
         test = VoteResult3D(m, n, "1D", "normal")
-        winner_mini = test.minimax()
-        print(f"Minimax winner {i} is {winner_mini} with a distortion of {test.distortion(winner_mini)}")
+        winner_mini = test.maximin()
+        print(f"Maximin winner {i} is {winner_mini} with a distortion of {test.distortion(winner_mini)}")
         winner_copeland = test.copeland()
         print(f"Copeland winner {i} is {winner_copeland} with a distortion of {test.distortion(winner_copeland)}")
 
