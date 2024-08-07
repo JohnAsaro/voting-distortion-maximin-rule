@@ -1,3 +1,4 @@
+index,n,m,Dimension,Distribution,OPT,Plurality,Plurality Distortion,Copeland,Copeland Distortion,STV,STV Distortion,Borda,Borda Distortion,STAR,STAR Distortion,Plurality Veto,Plurality Veto Distortion,Maximin,Maximin Distortion
 0,200,5,1D,normal,Candidate 2,Candidate 2,1.0,Candidate 2,1.0,Candidate 2,1.0,Candidate 2,1.0,Candidate 2,1.0,Candidate 2,1.0,Candidate 2,1.0
 1,200,5,1D,normal,Candidate 1,Candidate 0,1.0681187301549484,Candidate 1,1.0,Candidate 1,1.0,Candidate 4,1.0013722430898664,Candidate 1,1.0,Candidate 4,1.0013722430898664,Candidate 1,1.0
 2,200,5,1D,normal,Candidate 4,Candidate 4,1.0,Candidate 4,1.0,Candidate 4,1.0,Candidate 4,1.0,Candidate 4,1.0,Candidate 4,1.0,Candidate 4,1.0
