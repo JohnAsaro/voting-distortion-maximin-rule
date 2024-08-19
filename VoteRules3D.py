@@ -233,6 +233,7 @@ class VoteResult3D:
         #Greatest θ-winning set variables
         max_coefficient = 0
         greatest_theta_winning_sets = []
+        current_champ_tiebreaker = 0 #Tiebreaker is compared to the current theta winners tiebreaker
 
 
         #Number of ballots (n) and candidates (m)
@@ -243,29 +244,31 @@ class VoteResult3D:
         
         for j in range(m):
             counter = 0 #Initialize counter
+            tiebreaker = 0 #Initialize tiebreaker
             min_theta = 100000000 #Initialize min theta
             for k in range(m):
                 #To account for datasests where not all candidates are ranked, we need to check if the pair of candidates are in the ballot, every non listed candidate is considered to be of lower rank than any listed candidates
                 if k != j: #If k is not j
                     current_theta = 0 #Initialize current theta
                     for ballot in ballots:
-                        if candidates[k] not in ballot:
-                            if candidates[j] in ballot:
-                                counter += 1
-                        elif candidates[j] in ballot: #If candidate in the ballot
-                            if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If any candidate beats k
-                                counter += 1
+                        if ballot.index(candidates[j]) < ballot.index(candidates[k]): #If j beats k
+                            counter += 1
+                            tiebreaker += 1
                     #Normalize θ by the total number of votes to get the coefficient
                     current_theta = counter / n 
                     if current_theta < min_theta:
                         min_theta = current_theta
                     counter = 0 #Reset counter
-            this_coefficent = min_theta #Set the pair coefficient to the minimum theta found
+            this_coefficent = min_theta #Set the coefficient to the minimum theta found
             if this_coefficent > max_coefficient:
                 max_coefficient = this_coefficent
                 greatest_theta_winning_sets = [(candidates[j])]
-            elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie, not sure if this would ever happen when k = 1
-                greatest_theta_winning_sets.append((candidates[j]))
+                current_champ_tiebreaker = tiebreaker
+            elif this_coefficent == max_coefficient and max_coefficient != 0: #If there is a tie
+                if tiebreaker > current_champ_tiebreaker: #If the current coefficent has a higher tiebreaker than the current champion
+                    greatest_theta_winning_sets = [(candidates[j])]
+                    current_champ_tiebreaker = tiebreaker
+            tiebreaker = 0 #Reset tiebreaker for next candidate
 
         #A3: Return greatest θ-winning sets
         return greatest_theta_winning_sets[0]
